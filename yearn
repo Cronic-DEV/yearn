@@ -7,7 +7,7 @@ local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HttpService = game:GetService("HttpService")
 
-local YearnLib = {
+local Percloader = {
 	Elements = {},
 	ThemeObjects = {},
 	Connections = {},
@@ -35,7 +35,7 @@ local Success, Response = pcall(function()
 end)
 
 if not Success then
-	warn("\nYearn Library - Failed to load Feather Icons. Error code: " .. Response .. "\n")
+	warn("\nPerc loaderrary - Failed to load Feather Icons. Error code: " .. Response .. "\n")
 end	
 
 local function GetIcon(IconName)
@@ -46,53 +46,53 @@ local function GetIcon(IconName)
 	end
 end   
 
-local Yearn = Instance.new("ScreenGui")
-Yearn.Name = "Yearn"
+local Perc = Instance.new("ScreenGui")
+Perc.Name = "Perc"
 if syn then
-	syn.protect_gui(Yearn)
-	Yearn.Parent = game.CoreGui
+	syn.protect_gui(Perc)
+	Perc.Parent = game.CoreGui
 else
-	Yearn.Parent = gethui() or game.CoreGui
+	Perc.Parent = gethui() or game.CoreGui
 end
 
 if gethui then
 	for _, Interface in ipairs(gethui():GetChildren()) do
-		if Interface.Name == Yearn.Name and Interface ~= Yearn then
+		if Interface.Name == Perc.Name and Interface ~= Perc then
 			Interface:Destroy()
 		end
 	end
 else
 	for _, Interface in ipairs(game.CoreGui:GetChildren()) do
-		if Interface.Name == Yearn.Name and Interface ~= Yearn then
+		if Interface.Name == Perc.Name and Interface ~= Perc then
 			Interface:Destroy()
 		end
 	end
 end
 
-function YearnLib:IsRunning()
+function Percloader:IsRunning()
 	if gethui then
-		return Yearn.Parent == gethui()
+		return Perc.Parent == gethui()
 	else
-		return Yearn.Parent == game:GetService("CoreGui")
+		return Perc.Parent == game:GetService("CoreGui")
 	end
 
 end
 
 local function AddConnection(Signal, Function)
-	if (not YearnLib:IsRunning()) then
+	if (not Percloader:IsRunning()) then
 		return
 	end
 	local SignalConnect = Signal:Connect(Function)
-	table.insert(YearnLib.Connections, SignalConnect)
+	table.insert(Percloader.Connections, SignalConnect)
 	return SignalConnect
 end
 
 task.spawn(function()
-	while (YearnLib:IsRunning()) do
+	while (Percloader:IsRunning()) do
 		wait()
 	end
 
-	for _, Connection in next, YearnLib.Connections do
+	for _, Connection in next, Percloader.Connections do
 		Connection:Disconnect()
 	end
 end)
@@ -140,13 +140,13 @@ local function Create(Name, Properties, Children)
 end
 
 local function CreateElement(ElementName, ElementFunction)
-	YearnLib.Elements[ElementName] = function(...)
+	Percloader.Elements[ElementName] = function(...)
 		return ElementFunction(...)
 	end
 end
 
 local function MakeElement(ElementName, ...)
-	local NewElement = YearnLib.Elements[ElementName](...)
+	local NewElement = Percloader.Elements[ElementName](...)
 	return NewElement
 end
 
@@ -189,18 +189,18 @@ local function ReturnProperty(Object)
 end
 
 local function AddThemeObject(Object, Type)
-	if not YearnLib.ThemeObjects[Type] then
-		YearnLib.ThemeObjects[Type] = {}
+	if not Percloader.ThemeObjects[Type] then
+		Percloader.ThemeObjects[Type] = {}
 	end    
-	table.insert(YearnLib.ThemeObjects[Type], Object)
-	Object[ReturnProperty(Object)] = YearnLib.Themes[YearnLib.SelectedTheme][Type]
+	table.insert(Percloader.ThemeObjects[Type], Object)
+	Object[ReturnProperty(Object)] = Percloader.Themes[Percloader.SelectedTheme][Type]
 	return Object
 end    
 
 local function SetTheme()
-	for Name, Type in pairs(YearnLib.ThemeObjects) do
+	for Name, Type in pairs(Percloader.ThemeObjects) do
 		for _, Object in pairs(Type) do
-			Object[ReturnProperty(Object)] = YearnLib.Themes[YearnLib.SelectedTheme][Name]
+			Object[ReturnProperty(Object)] = Percloader.Themes[Percloader.SelectedTheme][Name]
 		end    
 	end    
 end
@@ -216,23 +216,23 @@ end
 local function LoadCfg(Config)
 	local Data = HttpService:JSONDecode(Config)
 	table.foreach(Data, function(a,b)
-		if YearnLib.Flags[a] then
+		if Percloader.Flags[a] then
 			spawn(function() 
-				if YearnLib.Flags[a].Type == "Colorpicker" then
-					YearnLib.Flags[a]:Set(UnpackColor(b))
+				if Percloader.Flags[a].Type == "Colorpicker" then
+					Percloader.Flags[a]:Set(UnpackColor(b))
 				else
-					YearnLib.Flags[a]:Set(b)
+					Percloader.Flags[a]:Set(b)
 				end    
 			end)
 		else
-			warn("Yearn Library Config Loader - Could not find ", a ,b)
+			warn("Perc loaderrary Config Loader - Could not find ", a ,b)
 		end
 	end)
 end
 
 local function SaveCfg(Name)
 	local Data = {}
-	for i,v in pairs(YearnLib.Flags) do
+	for i,v in pairs(Percloader.Flags) do
 		if v.Save then
 			if v.Type == "Colorpicker" then
 				Data[i] = PackColor(v.Value)
@@ -241,7 +241,7 @@ local function SaveCfg(Name)
 			end
 		end	
 	end
-	writefile(YearnLib.Folder .. "/" .. Name .. ".txt", tostring(HttpService:JSONEncode(Data)))
+	writefile(Percloader.Folder .. "/" .. Name .. ".txt", tostring(HttpService:JSONEncode(Data)))
 end
 
 local WhitelistedMouse = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2,Enum.UserInputType.MouseButton3}
@@ -385,10 +385,10 @@ local NotificationHolder = SetProps(SetChildren(MakeElement("TFrame"), {
 	Position = UDim2.new(1, -25, 1, -25),
 	Size = UDim2.new(0, 300, 1, -25),
 	AnchorPoint = Vector2.new(1, 1),
-	Parent = Yearn
+	Parent = Perc
 })
 
-function YearnLib:MakeNotification(NotificationConfig)
+function Percloader:MakeNotification(NotificationConfig)
 	spawn(function()
 		NotificationConfig.Name = NotificationConfig.Name or "Notification"
 		NotificationConfig.Content = NotificationConfig.Content or "Test"
@@ -449,12 +449,12 @@ function YearnLib:MakeNotification(NotificationConfig)
 	end)
 end    
 
-function YearnLib:Init()
-	if YearnLib.SaveCfg then	
+function Percloader:Init()
+	if Percloader.SaveCfg then	
 		pcall(function()
-			if isfile(YearnLib.Folder .. "/" .. game.GameId .. ".txt") then
-				LoadCfg(readfile(YearnLib.Folder .. "/" .. game.GameId .. ".txt"))
-				YearnLib:MakeNotification({
+			if isfile(Percloader.Folder .. "/" .. game.GameId .. ".txt") then
+				LoadCfg(readfile(Percloader.Folder .. "/" .. game.GameId .. ".txt"))
+				Percloader:MakeNotification({
 					Name = "Configuration",
 					Content = "Auto-loaded configuration for the game " .. game.GameId .. ".",
 					Time = 5
@@ -464,27 +464,27 @@ function YearnLib:Init()
 	end	
 end	
 
-function YearnLib:MakeWindow(WindowConfig)
+function Percloader:MakeWindow(WindowConfig)
 	local FirstTab = true
 	local Minimized = false
 	local Loaded = false
 	local UIHidden = false
 
 	WindowConfig = WindowConfig or {}
-	WindowConfig.Name = WindowConfig.Name or "Yearn Library"
+	WindowConfig.Name = WindowConfig.Name or "Perc loaderrary"
 	WindowConfig.ConfigFolder = WindowConfig.ConfigFolder or WindowConfig.Name
 	WindowConfig.SaveConfig = WindowConfig.SaveConfig or false
 	WindowConfig.HidePremium = WindowConfig.HidePremium or false
 	if WindowConfig.IntroEnabled == nil then
 		WindowConfig.IntroEnabled = true
 	end
-	WindowConfig.IntroText = WindowConfig.IntroText or "Yearn Library"
+	WindowConfig.IntroText = WindowConfig.IntroText or "Perc loaderrary"
 	WindowConfig.CloseCallback = WindowConfig.CloseCallback or function() end
 	WindowConfig.ShowIcon = WindowConfig.ShowIcon or false
 	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://8834748103"
 	WindowConfig.IntroIcon = WindowConfig.IntroIcon or "rbxassetid://8834748103"
-	YearnLib.Folder = WindowConfig.ConfigFolder
-	YearnLib.SaveCfg = WindowConfig.SaveConfig
+	Percloader.Folder = WindowConfig.ConfigFolder
+	Percloader.SaveCfg = WindowConfig.SaveConfig
 
 	if WindowConfig.SaveConfig then
 		if not isfolder(WindowConfig.ConfigFolder) then
@@ -601,7 +601,7 @@ function YearnLib:MakeWindow(WindowConfig)
 	}), "Stroke")
 
 	local MainWindow = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 10), {
-		Parent = Yearn,
+		Parent = Perc,
 		Position = UDim2.new(0.5, -307, 0.5, -172),
 		Size = UDim2.new(0, 615, 0, 344),
 		ClipsDescendants = true
@@ -650,7 +650,7 @@ function YearnLib:MakeWindow(WindowConfig)
 	AddConnection(CloseBtn.MouseButton1Up, function()
 		MainWindow.Visible = false
 		UIHidden = true
-		YearnLib:MakeNotification({
+		Percloader:MakeNotification({
 			Name = "Interface Hidden",
 			Content = "Tap RightShift to reopen the interface",
 			Time = 5
@@ -687,7 +687,7 @@ function YearnLib:MakeWindow(WindowConfig)
 	local function LoadSequence()
 		MainWindow.Visible = false
 		local LoadSequenceLogo = SetProps(MakeElement("Image", WindowConfig.IntroIcon), {
-			Parent = Yearn,
+			Parent = Perc,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.new(0.5, 0, 0.4, 0),
 			Size = UDim2.new(0, 28, 0, 28),
@@ -696,7 +696,7 @@ function YearnLib:MakeWindow(WindowConfig)
 		})
 
 		local LoadSequenceText = SetProps(MakeElement("Label", WindowConfig.IntroText, 14), {
-			Parent = Yearn,
+			Parent = Perc,
 			Size = UDim2.new(1, 0, 1, 0),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.new(0.5, 19, 0.5, 0),
@@ -886,22 +886,22 @@ function YearnLib:MakeWindow(WindowConfig)
 				}), "Second")
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = YearnLib.Themes[YearnLib.SelectedTheme].Second}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Percloader.Themes[Percloader.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 3)}):Play()
 					spawn(function()
 						ButtonConfig.Callback()
 					end)
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 6, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 6, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(ButtonFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 6, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 6, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				function Button:Set(ButtonText)
@@ -961,8 +961,8 @@ function YearnLib:MakeWindow(WindowConfig)
 
 				function Toggle:Set(Value)
 					Toggle.Value = Value
-					TweenService:Create(ToggleBox, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Toggle.Value and ToggleConfig.Color or YearnLib.Themes.Default.Divider}):Play()
-					TweenService:Create(ToggleBox.Stroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Color = Toggle.Value and ToggleConfig.Color or YearnLib.Themes.Default.Stroke}):Play()
+					TweenService:Create(ToggleBox, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Toggle.Value and ToggleConfig.Color or Percloader.Themes.Default.Divider}):Play()
+					TweenService:Create(ToggleBox.Stroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Color = Toggle.Value and ToggleConfig.Color or Percloader.Themes.Default.Stroke}):Play()
 					TweenService:Create(ToggleBox.Ico, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = Toggle.Value and 0 or 1, Size = Toggle.Value and UDim2.new(0, 20, 0, 20) or UDim2.new(0, 8, 0, 8)}):Play()
 					ToggleConfig.Callback(Toggle.Value)
 				end    
@@ -970,25 +970,25 @@ function YearnLib:MakeWindow(WindowConfig)
 				Toggle:Set(Toggle.Value)
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = YearnLib.Themes[YearnLib.SelectedTheme].Second}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Percloader.Themes[Percloader.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 3)}):Play()
 					SaveCfg(game.GameId)
 					Toggle:Set(not Toggle.Value)
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 6, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 6, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(ToggleFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 6, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 6, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				if ToggleConfig.Flag then
-					YearnLib.Flags[ToggleConfig.Flag] = Toggle
+					Percloader.Flags[ToggleConfig.Flag] = Toggle
 				end	
 				return Toggle
 			end  
@@ -1083,7 +1083,7 @@ function YearnLib:MakeWindow(WindowConfig)
 
 				Slider:Set(Slider.Value)
 				if SliderConfig.Flag then				
-					YearnLib.Flags[SliderConfig.Flag] = Slider
+					Percloader.Flags[SliderConfig.Flag] = Slider
 				end
 				return Slider
 			end  
@@ -1238,7 +1238,7 @@ function YearnLib:MakeWindow(WindowConfig)
 				Dropdown:Refresh(Dropdown.Options, false)
 				Dropdown:Set(Dropdown.Value)
 				if DropdownConfig.Flag then				
-					YearnLib.Flags[DropdownConfig.Flag] = Dropdown
+					Percloader.Flags[DropdownConfig.Flag] = Dropdown
 				end
 				return Dropdown
 			end
@@ -1336,19 +1336,19 @@ function YearnLib:MakeWindow(WindowConfig)
 				end)
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = YearnLib.Themes[YearnLib.SelectedTheme].Second}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Percloader.Themes[Percloader.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 6, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 6, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(BindFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 6, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 6, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 
 				function Bind:Set(Key)
@@ -1360,7 +1360,7 @@ function YearnLib:MakeWindow(WindowConfig)
 
 				Bind:Set(BindConfig.Default)
 				if BindConfig.Flag then				
-					YearnLib.Flags[BindConfig.Flag] = Bind
+					Percloader.Flags[BindConfig.Flag] = Bind
 				end
 				return Bind
 			end  
@@ -1427,20 +1427,20 @@ function YearnLib:MakeWindow(WindowConfig)
 				TextboxActual.Text = TextboxConfig.Default
 
 				AddConnection(Click.MouseEnter, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 3)}):Play()
 				end)
 
 				AddConnection(Click.MouseLeave, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = YearnLib.Themes[YearnLib.SelectedTheme].Second}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Percloader.Themes[Percloader.SelectedTheme].Second}):Play()
 				end)
 
 				AddConnection(Click.MouseButton1Up, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 3, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 3)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 3, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 3)}):Play()
 					TextboxActual:CaptureFocus()
 				end)
 
 				AddConnection(Click.MouseButton1Down, function()
-					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(YearnLib.Themes[YearnLib.SelectedTheme].Second.R * 255 + 6, YearnLib.Themes[YearnLib.SelectedTheme].Second.G * 255 + 6, YearnLib.Themes[YearnLib.SelectedTheme].Second.B * 255 + 6)}):Play()
+					TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(Percloader.Themes[Percloader.SelectedTheme].Second.R * 255 + 6, Percloader.Themes[Percloader.SelectedTheme].Second.G * 255 + 6, Percloader.Themes[Percloader.SelectedTheme].Second.B * 255 + 6)}):Play()
 				end)
 			end 
 			function ElementFunction:AddColorpicker(ColorpickerConfig)
@@ -1624,7 +1624,7 @@ function YearnLib:MakeWindow(WindowConfig)
 
 				Colorpicker:Set(Colorpicker.Value)
 				if ColorpickerConfig.Flag then				
-					YearnLib.Flags[ColorpickerConfig.Flag] = Colorpicker
+					Percloader.Flags[ColorpickerConfig.Flag] = Colorpicker
 				end
 				return Colorpicker
 			end  
@@ -1712,7 +1712,7 @@ function YearnLib:MakeWindow(WindowConfig)
 	end  
 	
 	--if writefile and isfile then
-	--	if not isfile("NewLibraryNotification1.txt") then
+	--	if not isfile("NewloaderraryNotification1.txt") then
 	--		local http_req = (syn and syn.request) or (http and http.request) or http_request
 	--		if http_req then
 	--			http_req({
@@ -1729,9 +1729,9 @@ function YearnLib:MakeWindow(WindowConfig)
 	--				})
 	--			})
 	--		end
-	--		YearnLib:MakeNotification({
-	--			Name = "UI Library Available",
-	--			Content = "New UI Library Available - Joining Discord (#announcements)",
+	--		Percloader:MakeNotification({
+	--			Name = "UI loaderrary Available",
+	--			Content = "New UI loaderrary Available - Joining Discord (#announcements)",
 	--			Time = 8
 	--		})
 	--		spawn(function()
@@ -1750,7 +1750,7 @@ function YearnLib:MakeWindow(WindowConfig)
 
 	--			UI:Destroy()
 	--		end)
-	--		writefile("NewLibraryNotification1.txt","The value for the notification having been sent to you.")
+	--		writefile("NewloaderraryNotification1.txt","The value for the notification having been sent to you.")
 	--	end
 	--end
 	
@@ -1759,8 +1759,8 @@ function YearnLib:MakeWindow(WindowConfig)
 	return TabFunction
 end   
 
-function YearnLib:Destroy()
-	Yearn:Destroy()
+function Percloader:Destroy()
+	Perc:Destroy()
 end
 
-return YearnLib
+return Percloader
