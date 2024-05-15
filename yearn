@@ -35,7 +35,7 @@ local Success, Response = pcall(function()
 end)
 
 if not Success then
-	warn("\nPerc Library - Failed to load Feather Icons. Error code: " .. Response .. "\n")
+	warn("\nPerc Loader - Failed to load Feather Icons. Error code: " .. Response .. "\n")
 end	
 
 local function GetIcon(IconName)
@@ -225,7 +225,7 @@ local function LoadCfg(Config)
 				end    
 			end)
 		else
-			warn("Perc Library Config Loader - Could not find ", a ,b)
+			warn("Perc Loader Config Loader - Could not find ", a ,b)
 		end
 	end)
 end
@@ -471,14 +471,14 @@ function PercLib:MakeWindow(WindowConfig)
 	local UIHidden = false
 
 	WindowConfig = WindowConfig or {}
-	WindowConfig.Name = WindowConfig.Name or "Perc Library"
+	WindowConfig.Name = WindowConfig.Name or "Perc Loader"
 	WindowConfig.ConfigFolder = WindowConfig.ConfigFolder or WindowConfig.Name
 	WindowConfig.SaveConfig = WindowConfig.SaveConfig or false
 	WindowConfig.HidePremium = WindowConfig.HidePremium or false
 	if WindowConfig.IntroEnabled == nil then
 		WindowConfig.IntroEnabled = true
 	end
-	WindowConfig.IntroText = WindowConfig.IntroText or "Perc Library"
+	WindowConfig.IntroText = WindowConfig.IntroText or "Perc Loader"
 	WindowConfig.CloseCallback = WindowConfig.CloseCallback or function() end
 	WindowConfig.ShowIcon = WindowConfig.ShowIcon or false
 	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://8834748103"
@@ -1712,7 +1712,7 @@ function PercLib:MakeWindow(WindowConfig)
 	end  
 	
 	--if writefile and isfile then
-	--	if not isfile("NewLibraryNotification1.txt") then
+	--	if not isfile("NewLoaderNotification1.txt") then
 	--		local http_req = (syn and syn.request) or (http and http.request) or http_request
 	--		if http_req then
 	--			http_req({
@@ -1730,8 +1730,8 @@ function PercLib:MakeWindow(WindowConfig)
 	--			})
 	--		end
 	--		PercLib:MakeNotification({
-	--			Name = "UI Library Available",
-	--			Content = "New UI Library Available - Joining Discord (#announcements)",
+	--			Name = "UI Loader Available",
+	--			Content = "New UI Loader Available - Joining Discord (#announcements)",
 	--			Time = 8
 	--		})
 	--		spawn(function()
@@ -1750,7 +1750,7 @@ function PercLib:MakeWindow(WindowConfig)
 
 	--			UI:Destroy()
 	--		end)
-	--		writefile("NewLibraryNotification1.txt","The value for the notification having been sent to you.")
+	--		writefile("NewLoaderNotification1.txt","The value for the notification having been sent to you.")
 	--	end
 	--end
 	
